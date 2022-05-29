@@ -1,18 +1,41 @@
 # coding:utf8
 import re
+import time
 
-from .basequotation import BaseQuotation
+from . import basequotation
 
 
-class Sina(BaseQuotation):
+class Sina(basequotation.BaseQuotation):
     """新浪免费行情获取"""
+
     max_num = 800
-    grep_detail = re.compile(r'(\d+)=([^\s][^,]+?)%s%s' % (r',([\.\d]+)' * 29, r',([-\.\d:]+)' * 2))
-    grep_detail_with_prefix = re.compile(r'(\w{2}\d+)=([^\s][^,]+?)%s%s' % (r',([\.\d]+)' * 29, r',([-\.\d:]+)' * 2))
-    stock_api = 'http://hq.sinajs.cn/?format=text&list='
+    grep_detail = re.compile(
+        r"(\d+)=[^\s]([^\s,]+?)%s%s"
+        % (r",([\.\d]+)" * 29, r",([-\.\d:]+)" * 2)
+    )
+    grep_detail_with_prefix = re.compile(
+        r"(\w{2}\d+)=[^\s]([^\s,]+?)%s%s"
+        % (r",([\.\d]+)" * 29, r",([-\.\d:]+)" * 2)
+    )
+    del_null_data_stock = re.compile(
+        r"(\w{2}\d+)=\"\";"
+    )
+
+    @property
+    def stock_api(self) -> str:
+        return f"http://hq.sinajs.cn/rn={int(time.time() * 1000)}&list="
+
+    def _get_headers(self) -> dict:
+        headers = super()._get_headers()
+        return {
+            **headers,
+            'Referer': 'http://finance.sina.com.cn/'
+        }
 
     def format_response_data(self, rep_data, prefix=False):
-        stocks_detail = ''.join(rep_data)
+        stocks_detail = "".join(rep_data)
+        stocks_detail = self.del_null_data_stock.sub('', stocks_detail)
+        stocks_detail = stocks_detail.replace(' ', '')
         grep_str = self.grep_detail_with_prefix if prefix else self.grep_detail
         result = grep_str.finditer(stocks_detail)
         stock_dict = dict()

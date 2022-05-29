@@ -1,18 +1,43 @@
 # easyquotation
 
+[![Package](https://img.shields.io/pypi/v/easyquotation.svg)](https://pypi.python.org/pypi/easyquotation)
+[![Travis](https://img.shields.io/travis/shidenggui/easyquotation.svg)](https://travis-ci.org/shidenggui/easyquotation)
+[![License](https://img.shields.io/github/license/shidenggui/easyquotation.svg)](https://github.com/shidenggui/easyquotation/blob/master/LICENSE)
+
+
 快速获取新浪/腾讯的全市场行情, 网络正常的情况下只需要 `200+ms`
 
 ### 前言
 * 获取新浪的免费实时行情
 * 获取腾讯财经的免费实时行情
 * 获取集思路的分级基金数据
-* 有兴趣的可以加群 `556050652` 一起讨论
 
-**开发环境** : `Ubuntu 16.04` / `Python 3.5`
+### 微信群以及公众号
+
+欢迎大家扫码关注公众号「食灯鬼」，一起交流。进群可通过菜单加我好友，备注量化。
+
+![公众号二维码](https://gitee.com/shidenggui/assets/raw/master/uPic/mp-qr.png)
+
+若二维码因 Github 网络无法打开，请点击[公众号二维码](https://gitee.com/shidenggui/assets/raw/master/uPic/mp-qr.png)直接打开图片。
+
+### Author
+
+**easyquotation** © [shidenggui](https://github.com/shidenggui), Released under the [MIT](./LICENSE) License.<br>
+
+> Blog [@shidenggui](https://shidenggui.com) · Weibo [@食灯鬼](https://www.weibo.com/u/1651274491) · Twitter [@shidenggui](https://twitter.com/shidenggui)
+>
+
+
+### 其他作品
+
+* [easytrader 股票程序化交易库](https://github.com/shidenggui/easytrader)
+* [easyquant 简单的量化框架](https://github.com/shidenggui/easyqutant)
+* [大数据网络小说推荐系统 - 推书君](https://www.tuishujun.com)
+* [中文独立个人博客导航 - bloghub.fun](https://bloghub.fun)
 
 ### requirements
 
-> Python 3.5+
+> Python 3.6+
  
 > pip install -r requirements.txt
 
@@ -20,6 +45,12 @@
 
 ```python
 pip install easyquotation
+```
+
+也可以下载源码，然后安装
+
+```python
+python setup.py install
 ```
 
 #### 升级
@@ -102,10 +133,18 @@ easyquotation.update_stock_codes()
 ```
 
 
-#### 选择 jsl 行情
+#### 选择 [jsl](https://www.jisilu.cn)（集思路） 行情
 
 ```
 quotation = easyquotation.use('jsl') # ['jsl']
+```
+
+##### 设置 cookie (可选)
+
+不设置的话获取相关数据有限制
+
+```
+quotation.set_cookie('从浏览器获取的集思录 Cookie')
 ```
 
 ##### 获取分级基金信息
@@ -315,7 +354,7 @@ quotation.etfindex(index_id="", min_volume=0, max_discount=None, min_discount=No
 ```python
 
 quotation = easyquotation.use("timekline")
-data = quotation.market_snapshot(prefix=True) 
+data = quotation.real(['603828'], prefix=True)
 
 ```
 
@@ -344,7 +383,7 @@ data = quotation.market_snapshot(prefix=True)
 
 import easyquotation
 quotation  = easyquotation.use("daykline")
-data = quotation.get_stock_data(stock_list=['00001','00700'])
+data = quotation.real(['00001','00700'])
 print(data)
 
 ```
@@ -368,7 +407,7 @@ print(data)
 
 import easyquotation
 quotation = easyquotation.use("hkquote")
-data = quotation.get_stock_data(stock_list=['00001','00700'])
+data = quotation.real(['00001','00700'])
 print(data)
 ```
 
@@ -402,3 +441,15 @@ print(data)
         }
 }
 ```
+
+### 开发指南
+
+#### 初始化环境
+
+进入项目目录后运行 
+
+```
+make init
+```
+
+提交代码时通过所有 `hooks` 检查即可
